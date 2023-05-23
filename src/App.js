@@ -1,23 +1,28 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import './App.css';
+import SearchBar from './components/SearchBar';
+import MovieList from './components/MovieList';
+import axios from 'axios';
 
 function App() {
+  const [movies, setMovies] = useState([]);
+
+  const handleSearch = (searchTerm) => {
+    axios
+    .get(`http://www.omdbapi.com/?i=tt3896198&apikey=af895fb6${searchTerm}`) 
+      .then((response) => {
+        setMovies(response.data); 
+      })
+      .catch((error) => {
+        console.error('Error fetching movie data:', error);
+      });
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1 className="App-header">Movie Recommendation App</h1>
+      <SearchBar onSearch={handleSearch} />
+      <MovieList movies={movies} />
     </div>
   );
 }
